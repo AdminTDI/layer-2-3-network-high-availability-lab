@@ -134,10 +134,10 @@ Redundant-Layer2-Layer3-HA-Lab/
 ├── <a href="packet-tracer/">packet-tracer/</a>
 │   └── <a href="packet-tracer/Layer 2-3 Network High Availability Lab.pkt">Layer 2-3 Network High Availability Lab.pkt</a>
 ├── <a href="configs/">configs/</a>
-│   ├── <a href="configs/MLS1.txt">MLS1.txt</a>
-│   ├── <a href="configs/MLS2.txt">MLS2.txt</a>
-│   ├── <a href="configs/ASW1.txt">ASW1.txt</a>
-│   └── <a href="configs/ASW2.txt">ASW2.txt</a>
+│   ├── <a href="configs/MLS1-config.txt">MLS1.txt</a>
+│   ├── <a href="configs/MLS2-config.txt">MLS2.txt</a>
+│   ├── <a href="configs/ASW1-config.txt">ASW1.txt</a>
+│   └── <a href="configs/ASW2-config.txt">ASW2.txt</a>
 └── <a href="screenshots/">screenshots/</a>
     └── <a href="screenshots/topology.png">topology.png</a>
 </pre>
