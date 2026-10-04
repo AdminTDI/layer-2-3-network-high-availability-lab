@@ -4,7 +4,7 @@
 
 Six completed Packet Tracer failure tests examined connectivity during link and distribution-switch failures, focusing on the interaction between HSRP gateway redundancy and Rapid-PVST+ forwarding-path changes.
 
-The [README](README.md) covers topology, addressing, and design decisions. This report describes observed reachability, protocol state, and forwarding behavior.
+The [README](README.md) provides the project overview and topology. This report contains the detailed design reference, test observations, and verification methods.
 
 ## Baseline State
 
@@ -20,6 +20,46 @@ Configured gateway preferences and STP root placement provide the reference stat
 | Infrastructure trunks | VLANs 10, 20, 30, 40, 999; native VLAN 999 |
 | Po1 | Fa0/23 and Fa0/24; LACP active/active |
 | Management | Basic VLAN 40 reachability verified |
+
+### Devices and connections
+
+| Role | Devices | Platform |
+| --- | --- | --- |
+| Distribution | MLS1, MLS2 | Cisco WS-C3560-24PS-E |
+| Access | ASW1, ASW2 | Cisco 2960 |
+| Endpoints | Admin-PC, Staff-PC1, Staff-PC2, Server | Packet Tracer hosts |
+
+Each access switch has a Gigabit uplink to each distribution switch. The inter-distribution Po1 bundle uses two FastEthernet links.
+
+| Connection | Interfaces |
+| --- | --- |
+| MLS1 ↔ ASW1 | Gi0/1 ↔ Gi0/1 |
+| MLS1 ↔ ASW2 | Gi0/2 ↔ Gi0/1 |
+| MLS2 ↔ ASW1 | Gi0/1 ↔ Gi0/2 |
+| MLS2 ↔ ASW2 | Gi0/2 ↔ Gi0/2 |
+| MLS1 ↔ MLS2, Po1 | Fa0/23 ↔ Fa0/23 and Fa0/24 ↔ Fa0/24 |
+
+### VLANs and addressing
+
+The HSRP virtual address is the default gateway for each routed VLAN. MLS1 uses `.2` and MLS2 uses `.3` for their respective SVIs.
+
+| VLAN | Purpose | Subnet | Virtual gateway | MLS1 SVI | MLS2 SVI |
+| --- | --- | --- | --- | --- | --- |
+| 10 | ADMIN | 10.10.10.0/24 | 10.10.10.1 | 10.10.10.2 | 10.10.10.3 |
+| 20 | STAFF | 10.20.20.0/24 | 10.20.20.1 | 10.20.20.2 | 10.20.20.3 |
+| 30 | SERVER | 10.30.30.0/24 | 10.30.30.1 | 10.30.30.2 | 10.30.30.3 |
+| 40 | MANAGEMENT | 10.40.40.0/24 | 10.40.40.1 | 10.40.40.2 | 10.40.40.3 |
+
+VLAN 999 (NATIVE) is the native VLAN on infrastructure trunks. The access-switch management addresses are `10.40.40.10/24` for ASW1 and `10.40.40.11/24` for ASW2, with gateway `10.40.40.1`.
+
+| Access switch | Port | Endpoint | VLAN |
+| --- | --- | --- | --- |
+| ASW1 | Fa0/1 | Staff-PC1 | 20 |
+| ASW1 | Fa0/2 | Admin-PC | 10 |
+| ASW2 | Fa0/1 | Staff-PC2 | 20 |
+| ASW2 | Fa0/2 | Server | 30 |
+
+Host-facing ports use access mode, PortFast, and BPDU Guard. Preferred STP roots align with HSRP gateway ownership to keep Layer 2 forwarding aligned with the preferred Layer 3 gateway where possible.
 
 ## Failure Test Matrix
 
@@ -82,7 +122,7 @@ Ping alone did not establish protocol behavior. HSRP and STP checks identified r
 
 After restoring the failed components, connectivity and the original preferred roles returned: MLS1 resumed HSRP Active and STP root roles for VLANs 10 and 20, and MLS2 resumed those roles for VLANs 30 and 40. HSRP preemption was configured to allow the preferred gateways to reclaim the Active role.
 
-Packet Tracer validation is not physical-hardware benchmarking. No measured convergence time, packet-loss count, or lossless-failover claim is made. PortFast and BPDU Guard were configured but not deeply failure-tested; management checks covered basic reachability.
+Packet Tracer validation is not physical-hardware benchmarking. No measured convergence time, packet-loss count, or lossless-failover claim is made. PortFast and BPDU Guard were configured but not deeply failure-tested; management checks covered basic reachability. SSH, Telnet, SNMP, AAA, and centralized management were outside the main objectives.
 
 ## Final Findings
 
