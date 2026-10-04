@@ -2,11 +2,17 @@
 
 ## Overview
 
-A failed switch or network link can disconnect users from the services they need. I built a network in Cisco Packet Tracer with redundant connections and gateways, then tested how it responded to six failure scenarios.
+I built a network in Cisco Packet Tracer with redundant connections and gateways, then tested how it responded to six failure scenarios.
 
 **Result:** connectivity remained available or recovered across the tested scenarios. One key finding: traffic could take another path while the same gateway remained active.
 
 This project follows a full validation workflow: design the network, configure it, verify the baseline, introduce failures, diagnose the behavior, restore service, and document the results.
+
+## Why This Design Matters
+
+A single distribution switch or uplink failure can disconnect users from internal services and other VLANs. This design reduces that risk through redundant paths and gateways, allowing traffic to continue or recover when part of the network becomes unavailable.
+
+Failure of a user's own access switch is outside the protection requirement.
 
 ## Topology
 
